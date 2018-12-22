@@ -1,0 +1,605 @@
+@charset "UTF-8";
+
+/*リセット*/
+html {
+  orphans: 1;
+  widows: 1;
+  font-size: 0.25mm;  /*qで級数指定できる*/
+}
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+@font-face{
+  font-family: inconsolata;
+  src: url("inconsolata.otf");
+}
+@font-face{
+  font-family: keyfont;
+  src: url("keyboard-JP-Regular.otf");
+}
+
+/*ページサイズ*/
+@page{
+  size: 148mm 210mm; /*A5正寸*/
+}
+
+/*ページテンプレート（マスターページ）*/
+@-epubx-page-template {
+  @-epubx-page-master {
+    -epubx-utilization: 0.1;
+    /*background: #f6f2ef;*/
+
+    /*本文領域*/
+    @-epubx-partition content-area {
+      -epubx-flow-from: body;
+      position: absolute;
+      top: 14mm;
+      left: 17mm;
+      width: 117mm;
+      height: 180mm;
+      overflow: visible;
+      /* background: #DDD; */
+    }
+    /*ノンブル（柱より前に書く必要あり？）*/
+    @-epubx-partition{
+      -epubx-enabled: -epubx-expr( page-number > 1 );
+      content: counter(page);
+      position: absolute;
+      text-align: center;
+      width: 148mm;
+      height: 5mm;
+      left: 0;
+      bottom: 2mm;
+      padding-bottom: 2mm;
+      /* background: #fee; */
+      font-size: 12rem;
+      color: #000000;
+    }
+    /*柱の指定*/
+    @-epubx-partition{
+      /* 奇数ページ */
+      -epubx-enabled: -epubx-expr( page-number % 2 == 1 );
+      -epubx-flow-from: header2;
+      position: absolute;
+      height: 7.1mm;
+      top:4mm;
+      right: 22mm;
+      text-align: right;
+    }
+  }
+}
+/* h2を柱に流し込む指定（ただし本文領域から消滅）*/
+/* h2{
+  -epubx-flow-into: header2;
+} */
+
+body{
+  width: 116mm;
+  font-size: 13rem;
+  line-height: 22q;
+  margin: auto;
+  font-family: "Noto Serif CJK JP", "Hiragino Kaku Gothic ProN", Roboto, Verdana, "游ゴシック", YuGothic, Meiryo, sans-serif;
+  counter-reset: secheader;
+  /*background: #EDD;*/
+}
+
+/* 強制改ページ指定*/
+.pagebreak{
+  visibility: hidden;
+  page-break-after: always;
+  margin-top:-4mm;
+}
+
+/* 本文 */
+p{
+  text-align: justify;
+  font-size: 13rem;
+  line-height: 22q;
+  text-indent: 1em;
+  font-family: "Noto Sans CJK JP Regular", sans-serif;
+}
+strong{
+  font-family: "Noto Sans CJK JP Medium", sans-serif;
+  background: #ff0;
+  font-weight: 500;
+}
+em{
+  margin-left: 2rem;
+  margin-right: 4rem;
+}
+
+/* キーフォント */
+kbd{
+  font-family: keyfont;
+  /* vertical-align: top; */
+}
+
+/* 箇条書き */
+ul {
+  font-family: "Noto Sans CJK JP Medium";
+  margin-top: 11rem;
+  margin-bottom: 11rem;
+  margin-left: 2em;
+}
+
+/* 表 */
+table{
+  border-collapse: collapse;
+  margin-top: 3mm;
+  font-family: "Noto Sans CJK JP Regular", sans-serif;
+  /*margin-left: -8.6mm;*/
+  margin-bottom: 3mm;
+}
+th, td{
+  font-size: 11rem;
+  line-height: 3.75mm;
+  padding: 1mm 1.5mm 1mm 1.5mm;
+  border: solid 0.25mm #888;
+}
+th{
+  background: #9bcb60;
+  min-width: 20mm;
+}
+td{
+  font-family: "Noto Sans CJK JP DemiLight", sans-serif;
+}
+
+/* カバーページ */
+.coverpage{
+  background: #9bcb60;
+  page-break-after: always;
+  padding-top: 54mm;
+  padding-left: 37mm;
+  height: 160mm;
+  width: 148mm;
+  margin-top: -14mm;
+  margin-left: -17mm;
+}
+h1{
+  font-size: 32rem;
+  line-height: 50q;
+  font-family: "Noto Sans CJK JP Bold", sans-serif;
+  width: 10em;
+  counter-reset: secheader 1;
+}
+
+/* 節見出し */
+.secheader{
+  height: 26mm;
+  margin-top: -7mm;
+  margin-bottom: 0;
+  padding-top: 7mm;
+  padding-left: 18.5mm;
+  page-break-before: always;
+  /* background: #eee; */
+  position: relative;
+  counter-increment: secheader;
+}
+
+/* 見出し類 */
+h2{
+  font-size: 29rem;
+  line-height: 35q;
+  font-family: "Noto Sans CJK JP Medium", sans-serif;
+  border-left: solid 1mm #1a714c;
+  padding-left: 4.5mm;
+  margin-left: 4.5mm;
+  width: 97.5mm;
+  height: 16mm;
+  display: table-cell;
+  vertical-align: middle;
+}
+h2::before{
+  content: counter(secheader, decimal-leading-zero);
+  font-family: "Noto Sans CJK JP Black", sans-serif;
+  font-size: 52rem;
+  color: #1a714c;
+  position: absolute;
+  top: 10mm;
+  left: 0;
+  width: 18.5mm;
+}
+
+h3{
+  font-size: 16rem;
+  line-height: 44q;
+  font-family: "Noto Sans CJK JP Medium", sans-serif;
+  color: #1a714c;
+  margin-top: 4mm;
+  page-break-before: avoid;
+}
+h3:first-child, .pagebreak+h3{
+  margin-top: 0;
+}
+h3::before{
+  content: "●";
+}
+
+h4{
+  font-size: 13rem;
+  margin-top: 22rem;
+  line-height: 22q;
+  font-family: "Noto Sans CJK JP Medium", sans-serif;
+  page-break-before: avoid;
+}
+h4:first-child, .pagebreak+h4{
+  margin-top: 0;
+}
+
+/*ソースコード*/
+/*h6はソースコードタイトル*/
+h6{
+  font-family: "Noto Sans CJK JP Medium", sans-serif;
+  font-size: 13rem;
+  line-height: 5.5mm;
+  height: 5.5mm;
+  position: relative;
+  padding-left: 7mm;
+  margin-top: 2.6mm;
+  page-break-before: avoid;
+}
+h6::before{
+  content: " ";
+  background: #9bcb60;
+  display: block;
+  position: absolute;
+  left: 0;
+  width: 5.5mm;
+  height: 5.5mm;
+}
+h6:first-child, .pagebreak+h6{
+  margin-top: 0;
+}
+.powershell{
+  color: #888;
+  background: #fff;
+  border: solid 0.25mm #888;
+}
+.powershell::before{
+  background: #4759f6;
+  width: 3mm;
+  height: 3mm;
+  top: 1mm;
+  left: 1mm;
+}
+pre{
+  font-size: 12rem;
+  line-height: 24q;
+  background: #eae4d1;
+  /* background: #e2f3fa; */
+  margin-top: 3.6mm;
+  margin-bottom: 4mm;
+  padding: 1.5mm;
+  overflow: visible;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: inconsolata;
+  border-top: solid 0.3mm #1a714c;
+}
+pre code{
+  font-family: inconsolata;
+}
+.powershell+pre{
+  background: #4759f6;
+  color: #fff;
+  border-top: none;
+  margin-top: 0;
+}
+/* コード内コメントのカラー */
+.hljs-comment{
+  color: #555;
+}
+/* コード内引き出し線 */
+.codered{
+  background: #f00;
+  color: #fff;
+  font-size: 9rem;
+  line-height: 12q;
+  position: relative;
+  padding: 0 1mm 0.5mm 1mm;
+  font-family: "Noto Sans CJK JP Medium", sans-serif;
+}
+.codered::before{
+  content: "";
+  display: block;
+  position: absolute;
+  width: 10mm;
+  top: 1.75mm;
+  left: -10mm;
+  border-bottom: solid 0.25mm #f00;
+}
+h6 + pre{
+  margin-top: 0.5mm;
+}
+
+/* 図版領域 */
+.figure{
+  display: flex;
+  flex-direction: row;     /*横並びにする*/
+  align-items: flex-end; /*縦に伸ばさない*/
+  flex-wrap: wrap;
+  position: relative;
+  margin-top: 4mm;
+  margin-bottom: 4mm;
+}
+.figure svg{
+  border: solid 0.2mm #eee;
+}
+/* 図中文字 */
+.figure ul{
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 12rem;
+  line-height: 16q;
+  font-family: "Noto Sans CJK JP Medium";
+  list-style-type: none;
+  color: #000;
+  max-width: 13em;
+  margin: 0;
+  padding-left: 0;
+}
+.figure li{
+  margin-bottom: 3.5mm;
+  border: solid 0.25mm #f00;
+  padding: 0.25mm;
+  background: rgba(255,255,255,0.5);
+}
+.akakome{
+  /* text-indent: -1em; */
+}
+.figure .akakome::first-letter{
+  color: #f00;
+}
+li.aokome{
+  /* text-indent: -1em; */
+  border: dashed 0.25mm #00f;
+}
+/* .figure .aokome::first-letter{
+  color: #00f;
+} */
+
+.figure p{
+    font-size: 11rem;
+    line-height: 15q;
+    text-indent: 0;
+}
+
+
+.floatright{
+  float: right;
+  margin-left: 4mm;
+}
+.floatclear{
+  clear: both;
+}
+
+.small{
+  text-indent: 0;
+  font-size: 11rem;
+}
+
+/* コラムパーツ */
+.column{
+  padding: 3mm 5mm;
+  border: solid 1px #9bcb60;
+  border-radius: 2mm;
+  margin-top: 5mm;
+}
+.column p{
+  text-indent: 0;
+  font-size: 11rem;
+  line-height: 16q;
+  font-family: "Noto Sans CJK JP DemiLight", sans-serif;
+}
+.column:first-child, .pagebreak+.column {
+  margin-top: 0;
+}
+.column h5{
+  font-size: 15rem;
+  line-height: 15q;
+  margin: 0;
+  margin-bottom: 2mm;
+  font-family: "Noto Sans CJK JP Medium", sans-serif;
+}
+
+/* ふりがなコード */
+.furicode{
+  background: #eae4d1;
+  position: relative;
+  margin-top: 3.6mm;
+  margin-bottom: 4mm;
+  padding: 1.5mm;
+  overflow: visible;
+  border-top: solid 0.3mm #1a714c;
+  page-break-inside: avoid;
+}
+h6 + .furicode{
+  margin-top: 0.5mm;
+}
+.furicode pre{
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.furicode pre:nth-child(1){
+  margin-top: 0.75mm;
+  font-size: 22rem;
+  line-height: 44q;
+}
+.furicode pre:nth-child(2){
+  position: absolute;
+  top: -2mm;
+  font-size: 9rem;
+  line-height: 44q;
+  color: #f00;
+}
+.bluefurigana{
+  color: #fff;
+  background: #f00;
+  font-weight: bold;
+  border: solid 0.5mm #f00;
+  position: relative;
+  top: 4mm;
+}
+.bluefurigana2{
+  color: #fff;
+  background: #f00;
+  font-weight: bold;
+  border: solid 0.5mm #f00;
+  position: relative;
+  top: -1mm;
+}
+
+/* 読み下し文 */
+.yomikudashi::before{
+  display: none;
+}
+.yomikudashi{
+  font-size: 12rem;
+  background: #0094ff;
+  padding-left: 0.5mm;
+  width: 6em;
+  text-align: center;
+  color: #fff;
+  border-radius: 2mm;
+}
+.yomikudashi+pre{
+  border: dashed 0.25mm #00f;
+  margin-top: 1mm;
+}
+.yk-strong{
+  color: #f00;
+}
+/* 評価順を表す数値 */
+.furicode .yk-strong{
+  color: #00f;
+  position: relative;
+  top: -1mm;
+  font-family: "Noto Sans CJK JP Black";
+}
+
+/* コメントパーツ（余白にはみ出す） */
+.comment{
+  position: absolute;
+  display: block;
+  text-indent: 0;
+  left: -17mm;
+  font-size: 8rem;
+  line-height: 13q;
+  background: #ffff80;
+  width: 8em;
+  border: solid 0.25mm #f9a544;
+  padding: 1px;
+  font-family: "Noto Sans CJK JP Medium";
+}
+.comment:not([data-adapt-eloff]){
+  left: 0;
+}
+.hen{
+  background: #ff0;
+}
+.hen p{
+  text-indent: 0;
+}
+
+/* 会話のフキダシ */
+.face{
+  font-size: 12rem;
+  line-height: 4.25mm;
+  background: #cdf;
+  border-radius: 2mm;
+  padding: 2.5mm 2.5mm;
+  max-width: 85mm;
+  width: 85mm;
+  margin-bottom: 2mm;
+  margin-left: 18mm;
+  margin-right: 18mm;
+  text-indent: 0;
+  position: relative;
+}
+:not(.face)+.face{
+  margin-top: 4mm;
+}
+.student{
+  background: #fdd;
+  margin-left: 18mm;
+}
+.face::before{
+  content: "";
+  background: url("img/apron_man1-1smile.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  width: 14mm;
+  height: 14mm;
+  position: absolute;
+  top: -2mm;
+  left: -18mm;
+}
+.student::after{
+  content: "▶";
+  color: #bbb;
+  position: absolute;
+  top: 0;
+  left: 85mm;
+  top: 1mm;
+}
+.teacher::after{
+  content: "◀";
+  color: #bbb;
+  position: absolute;
+  top: 0;
+  left: -3mm;
+  top: 1mm;
+}
+.student::before{
+  left: 88mm;
+  background: url("img/apron_woman1-1smile.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.teacher-laugh::before{
+  background: url("img/apron_man1-4laugh.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.student-laugh::before{
+  background: url("img/apron_woman1-4laugh.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.teacher-idea::before{
+  background: url("img/apron_man2-1idea.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.student-idea::before{
+  background: url("img/apron_woman2-1idea.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.teacher-shock::before{
+  background: url("img/apron_man2-2shock.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.student-shock::before{
+  background: url("img/apron_woman2-2shock.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.teacher-hatena::before{
+  background: url("img/apron_man3-1question.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.student-hatena::before{
+  background: url("img/apron_woman3-1question.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
