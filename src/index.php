@@ -106,7 +106,9 @@ try{
             </table>
 
             <a href="http://www.libroworks.co.jp" target="_blank">2018 リブロワークス</a>
-            <p><small>試験的なツールなので予告なしに終了する場合があります。</small></p>
+            <p><small>試験的なツールなので予告なしに終了する場合があります。
+                <a href="https://github.com/lwohtsu/FuriCodeMaker">repository</a>
+            </small></p>
         </footer>
 
     </body>
