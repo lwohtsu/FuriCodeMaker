@@ -1,28 +1,53 @@
 @charset "utf-8";
 
+/* html, body {
+    height: 100%;
+}
+*/
+
+header{
+    text-align: center;
+}
 #mdp-tab{
     display: flex;
+    /* height: 70%; */
 }
-
-#editor-area{
-    width: 50%;
-    height: 100%;
-    /* position:fixed;
-    left: 0;
-    top: 140px; */
-}
-#editor-bar{
-    font-size: 12px;
-    background: #222;
-    color: #fff;
-    margin: 0;
-    padding: 4px;
+#expage-preview {
+    min-width: 45%;
+    border: none;
 }
 #markdown-editor{
-    width: 100%;
-    height: 100%;
+    min-width: 45%;
     min-height: 300px;
-    overflow: auto;
+}
+#hide-bar{
+    min-width: 15px;
+    width: 15px;
+    border:solid 1px #aaa;
+    background: #FFD;
+}
+footer{
+    text-align: center;
+    min-height: 10%;
+}
+
+#sakuhin_list{
+    border-collapse: collapse;
+    margin: 10px;
+    text-align: left;
+    margin: auto;
+    margin-bottom: 40px;
+}
+th, td{
+    border-top:solid 1px #CCC;
+    padding:4px;
+}
+th{
+    background: #EEE;
+    width: 8em;
+}
+td{
+    width: 28em;
 }
 
 /* #html-preview, #expage-preview{

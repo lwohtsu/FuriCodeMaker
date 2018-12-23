@@ -276,7 +276,7 @@ pre{
   overflow: visible;
   white-space: pre-wrap;
   word-wrap: break-word;
-  font-family: inconsolata;
+  font-family: inconsolata, monospace;
   border-top: solid 0.3mm #1a714c;
 }
 pre code{

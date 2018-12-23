@@ -10,10 +10,12 @@ $(function(){
     //     $('#expage-preview').height(dh- tabh);
     // }
 
-    // エディタエリアの開閉
-    // $('#markdown-editor').hide();
-    $('#editor-bar').click(function(){
+    //エディタエリアの開閉
+    $('#markdown-editor').hide();
+    $('#buttons').hide();
+    $('#hide-bar').click(function(){
         $('#markdown-editor').toggle();
+        $('#buttons').toggle();
     });
 
     // エディタ初期化
@@ -29,10 +31,14 @@ $(function(){
 
     var timer = setTimeout(function(){
         renderMD(mdsrctext);
+        // サイズ変更
+        var exiframe =  $('#expage-preview');
+        // var exbody = exiframe.contents().find('body');
+        var innerHeight = exiframe.get(0).contentWindow.document.body.scrollHeight;
+        exiframe.attr('height', innerHeight + 'px');
+        $('#markdown-editor').attr('height', innerHeight + 'px');
+        editor.resize(true);
     }, 500);
-
-    // // モーダル初期化
-    // $('.modal').modal();
 
     // 変更監視
     var mdchange = false;
@@ -50,6 +56,54 @@ $(function(){
         var timer = setTimeout(loop, 2000);
     };
     loop();
+
+    //作品の更新
+    $('#btn_update').on('click', function(){
+        if(!contentid) return;
+        if(confirm('本当に作品を上書き更新してよろしいですか？')){
+            var mdtext = editor.getValue();
+            $.ajax({
+                url:'update.php',
+                type: 'post',
+                data:{
+                    'id': contentid,
+                    'mdtext': mdtext,
+                    'title': mdtext.split(/\r\n|\r|\n/)[0]
+                }
+            })
+            .done( (data)=>{
+                console.log(data);
+                location.reload();
+            })
+            .fail( (data)=>{
+                console.log(data);
+                alert('失敗しました');
+            });
+        }
+    });
+
+    //作品の新規投稿
+    $('#btn_insert').on('click', function(){
+        var mdtext = editor.getValue();
+        $.ajax({
+            url:'insert.php',
+            type: 'post',
+            data:{
+                'mdtext': mdtext,
+                'title': mdtext.split(/\r\n|\r|\n/)[0]
+            }
+        })
+        .done( (data)=>{
+            console.log(data);
+            // ページに移動
+            var urlstr = document.location.protocol + document.location.pathname + "?id=" + data;
+            document.location.href = urlstr;
+        })
+        .fail( (data)=>{
+            console.log(data);
+            alert('失敗しました');
+        });
+    });
 
 });
 

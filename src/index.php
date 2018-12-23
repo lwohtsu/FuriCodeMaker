@@ -3,10 +3,23 @@ require_once 'furicode_dbinfo.php';
 
 // GETからパラメータのid取得
 $id = htmlspecialchars($_GET["id"]);
-// echo htmlspecialchars($_GET["id"]);
-if(!$id){
-    // echo "no param";
-    $template = "";
+
+// データベースに接続
+try{
+    $pdo = new PDO(
+        'mysql:dbname=azureturtle3_furicode;host=localhost;charset=utf8mb4',
+        $dbinfo['user'],
+        $dbinfo['pass'],
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+} catch (PDOException $e) {
+    exit();
+    // header('Content-Type: text/plain; charset=UTF-8', true, 500);
+    // exit($e->getMessage());
+
 }
 
 ?>
@@ -16,56 +29,85 @@ if(!$id){
     <head>
         <meta charset="utf-8">
         <title>ふりがなプログラミングメーカー</title>
-        <meta name="robots" content="noindex" />
-        <!--Import Google Icon Font-->
-        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <!-- <link rel="stylesheet" href="node_modules/materialize-css/dist/css/materialize.min.css"> -->
-
         <link rel="stylesheet" href="css/index.css">
-        <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+        <meta property="og:title" content="ふりがなプログラミングメーカー" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http:www.libroworks.co.jp/furicode" />
+        <meta property="og:image" content="ogpimage.png" />
+        <meta property="og:site_name" content="リブロワークスホームページ" />
+        <meta property="og:description" content="ふりがなプログラミングメーカー" />
 
         <!-- スクリプト読み込み -->
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
-        <script src="node_modules/materialize-css/dist/js/materialize.min.js"></script>
         <script src="node_modules/ace-builds/src-min-noconflict/ace.js"></script>
         <!--<script src="node_modules/highlight/lib/highlight.js"></script>-->
         <script src="node_modules/marked/lib/marked.js"></script>
         <script src="sample/_postReplaceList.js"></script>
         <script src="sample/mdsrctext.js"></script>
-        <script src="js/index.js" defer></script>
     </head>
 
     <body>
-        <h1>ふりがなプログラミングメーカー</h1>
-        <!--Navbar-->
-        <!-- <nav class="nav-extended">
-            <div class="nav-wrapper">
-            <a href="#" class="brand-logo">ふりがなプログラミングメーカー</a>
-            <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="https://www.libroworks.co.jp" target="_blank">LibroWorks inc.</a></li>
-            </ul>
-            <ul class="side-nav" id="mobile-demo">
-                <li><a href="https://www.libroworks.co.jp" target="_blank">LibroWorks inc.</a></li>
-            </ul>
+        <header>
+            <h1>ふりがなプログラミングメーカー</h1>
+            <?php
+                // 過去記事を表示
+                if($id){
+                    $stmt = $pdo->prepare('SELECT * FROM furicode WHERE id = ?');
+                    $stmt->bindValue(1, (int)$id, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $result = $stmt->fetchAll();
+                    if(count($result)<1){
+                        unset($id);
+                    } else {
+                        // var_dump($result[0]["content"]);
+                        $content = $result[0]["content"];
+                        echo "<h2>作品No.".$id."</h2>";
+                        echo "<script>";
+                        echo "mdsrctext =`" . str_replace("`", "\`" ,$content) . "`;" ;
+                        echo "var contentid = " . $id . ";";
+                        echo "</script>";
+                    }
+                }
+            ?>
+            <script src="js/index.js"></script>
 
-            <ul class="tabs tabs-transparent">
-                <li class="tab"><a class="active" href="#mdp-tab">プレビュー</a></li>
-            </ul>
-            </div>
-        </nav> -->
+        </header>
         <!--MDプレビュータブ-->
         <div id="mdp-tab">
-            <!--テキストエディタ-->
-            <div id="editor-area">
-                <h3 id="editor-bar"><i class="material-icons tiny">swap_vert</i>Markdown</h3>
-                <div id="markdown-editor"># マークダウン</div>
-            </div>
+            <div id="markdown-editor"># マークダウン</div>
+
+            <div id="hide-bar"></div>
 
             <!--ページプレビュー部-->
-            <iframe id="expage-preview" class="row-html" src="sample/iframe.html"></iframe>
+            <iframe id="expage-preview" class="row-html" src="sample/iframe.html" height="100%" width="100%"></iframe>
         </div>
+        <footer>
+            <p id="buttons">
+                <button id="btn_update">作品No.<?php echo($id); ?>を更新</button>
+                <button id="btn_insert">新規作品として投稿</button>
+            </p>
+
+            <h2>作品リスト</h2>
+            <table id="sakuhin_list">
+                <?php
+                //投稿一覧を取得
+                $stmt = $pdo->query('SELECT * FROM furicode');
+                $siteurl = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
+                while ($row = $stmt->fetch()) {
+                    echo('<tr>');
+                    echo('<th><a href="'.$siteurl.'?id='.$row['id'].'">'.$row['id'].'</a></th>');
+                    echo('<td>'.$row['title'].'</td>');
+                    echo('</tr>');
+                }
+                ?>
+            </table>
+
+            <a href="http://www.libroworks.co.jp" target="_blank">2018 リブロワークス</a>
+            <p><small>試験的なツールなので予告なしに終了する場合があります。</small></p>
+        </footer>
 
     </body>
 </html>
