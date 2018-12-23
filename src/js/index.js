@@ -115,7 +115,7 @@ function renderMD(mdtext){
     tables: true,     //表組み対応
     breaks: false,    //GFMページブレーク対応
     pedantic: false,
-    sanitize: false,  //HTMLタグのエスケープ（svgなどを通したいので無効に）
+    sanitize: true,  //HTMLタグのエスケープ
     smartLists: true,
     smartypants: false,
     // // コードハイライト用の関数を当てる

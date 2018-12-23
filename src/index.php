@@ -54,7 +54,7 @@ try{
             <h1>ふりがなプログラミングメーカー</h1>
             <?php
                 // 過去記事を表示
-                if($id){
+                if(isset($id)){
                     $stmt = $pdo->prepare('SELECT * FROM furicode WHERE id = ?');
                     $stmt->bindValue(1, (int)$id, PDO::PARAM_INT);
                     $stmt->execute();
@@ -86,7 +86,11 @@ try{
         </div>
         <footer>
             <p id="buttons">
-                <button id="btn_update">作品No.<?php echo($id); ?>を更新</button>
+                <?php
+                if(isset($id)){
+                    echo '<button id="btn_update">作品No.' . $id . 'を更新</button>';
+                }
+                ?>
                 <button id="btn_insert">新規作品として投稿</button>
             </p>
 
