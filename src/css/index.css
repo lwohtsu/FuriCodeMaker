@@ -30,6 +30,9 @@ footer{
     text-align: center;
     min-height: 10%;
 }
+#buttons{
+    text-align: left;
+}
 
 #sakuhin_list{
     border-collapse: collapse;

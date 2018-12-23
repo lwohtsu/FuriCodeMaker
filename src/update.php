@@ -10,7 +10,7 @@ if(isset($_POST['id']) && isset($_POST['mdtext']) && isset($_POST['title']) ){
     // データベースに接続
     try{
         $pdo = new PDO(
-            'mysql:dbname=azureturtle3_furicode;host=localhost;charset=utf8mb4',
+            'mysql:dbname='.$dbinfo['dbname'].';host='.$dbinfo['host'].';charset=utf8mb4',
             $dbinfo['user'],
             $dbinfo['pass'],
             [

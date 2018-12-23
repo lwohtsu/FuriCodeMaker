@@ -7,7 +7,7 @@ $id = htmlspecialchars($_GET["id"]);
 // データベースに接続
 try{
     $pdo = new PDO(
-        'mysql:dbname=azureturtle3_furicode;host=localhost;charset=utf8mb4',
+        'mysql:dbname='.$dbinfo['dbname'].';host='.$dbinfo['host'].';charset=utf8mb4',
         $dbinfo['user'],
         $dbinfo['pass'],
         [
@@ -94,7 +94,7 @@ try{
             <table id="sakuhin_list">
                 <?php
                 //投稿一覧を取得
-                $stmt = $pdo->query('SELECT * FROM furicode');
+                $stmt = $pdo->query('SELECT * FROM furicode ORDER BY id DESC');
                 $siteurl = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
                 while ($row = $stmt->fetch()) {
                     echo('<tr>');
