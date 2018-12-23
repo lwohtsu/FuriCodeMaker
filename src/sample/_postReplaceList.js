@@ -81,7 +81,7 @@ var postReplaceList =
       "r": "<span class=\"codered\">$1</span>"
   },
   {
-      "f": "★<span[^>]*>4<\/span>字下げ",
+      "f": "★4字下げ",
       "r": "<span class=\"bluefurigana\">4字下げ<\/span>"
   },
   {
